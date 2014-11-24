@@ -1,0 +1,41 @@
+\documentclass[mathserif]{beamer}
+%\usetheme{default}
+% \usepackage{beamerthemesplit} // Activate for custom appearance
+\definecolor{fore}{RGB}{51,51,51}
+\definecolor{back}{RGB}{249,249,230}
+\definecolor{title}{RGB}{168,18,18}
+%\definecolor{title}{RGB}{255,90,0}
+\setbeamercolor{titlelike}{fg=title}
+\setbeamercolor{normal text}{fg=fore,bg=back}
+\usepackage[T1]{fontenc}
+\usepackage[lf]{Baskervaldx}
+\usepackage{listings}
+\definecolor{keywords}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{60,179,113}
+\lstset{language=Python,
+keywordstyle=color{keywords},
+commentstyle=color{comments}emph}
+
+\title{CS 182 Project Update}
+\author{Alexander Moore, Anupa Murali, and Elliot Silva}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+\section{ Maximizing Traffic Flow and City Profit}
+\frame{\tableofcontents}
+
+\section{}
+\frame
+{
+  \frametitle{Current Status}
+\vspace{-0.6in}
+  \begin{itemize}
+  \item<1->  Implemented City Interface
+  \item<2-> Fixed number of vehicles ($N$), edge weights ($\{w_1,\ldots,w_m\}$), and probabilities
+  \item<3-> Implemented simple Ford-Fulkerson algorithm
+  \item<4-> Implemented local search algorithms
+  \end{itemize}
+}
+\end{document}
