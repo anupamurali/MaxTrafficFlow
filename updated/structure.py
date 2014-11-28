@@ -1,4 +1,7 @@
 class Structure:
+    """
+    Defines a Structure. Structures can be placed on Nodes.
+    """
     def __init__(self):
         pass
 
