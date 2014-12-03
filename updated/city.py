@@ -2,6 +2,13 @@ class City:
     def __init__(self, nodes, roads, source, sink):
         """
         Initializes the city and all supplemental data structures
+
+        Args:
+            nodes: list of integers representing node ID
+            roads: list of integers representing road ID
+            source: integer representing ID number of start node
+            sink: integer representing ID number of end node
+            
         """
         self.nodes = nodes
         self.roads = roads
@@ -17,14 +24,10 @@ class City:
         # Dictionary of shortest path distances from each node to the sink
         self.shortest_dists = {}
 
-        #
         # Construct entering and exiting node dictionaries
-        #
         self.__populate_enter_exit()
 
-        #
         # Populate the shortest_dists dictionary
-        #
         self.populate_shortest_dists()
 
     def __populate_enter_exit(self):
