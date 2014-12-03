@@ -42,21 +42,32 @@ def compute_initial_probabilities(city):
     Suppose roads 0,...,n-1 are sorted in increasing order of distance.
     P(take road i) = dist(road[n - i]) / total_dist
 
-
     ANOTHER IDEA: Base road distances on the distance of the shortest path from that node to the sink (more realistic, not hard to do)
     """
     city = copy.deepcopy(city)
 
-    # Iterate over all city nodes and compute probabilities
-    for node in city.nodes:
-        # Get roads leaving this node
-        exit_roads = city.exit_roads[node]
-        # Sort roads in increasing order for probability computation
-        sorted_exit_roads = sorted([road for road in exit_roads], key=lambda x: x.distance)
-        total_dist = sum([road.distance for road in exit_roads])
-        num_roads = len(exit_roads)
+##    # Iterate over all city nodes and compute probabilities
+##    for node in city.nodes:
+##        # Get roads leaving this node
+##        exit_roads = city.exit_roads[node]
+##        # Sort roads in increasing order for probability computation
+##        sorted_exit_roads = sorted([road for road in exit_roads], key=lambda x: x.distance)
+##        total_dist = sum([road.distance for road in exit_roads])
+##        num_roads = len(exit_roads)
+##
+##        # Compute probabilities
+##        for i in xrange(0,num_roads):
+##            sorted_exit_roads[i].probability = sorted_exit_roads[num_roads - i - 1].distance / total_dist
+##    return city
 
-        # Compute probabilities
-        for i in xrange(0,num_roads):
-            sorted_exit_roads[i].probability = sorted_exit_roads[num_roads - i - 1].distance / total_dist
+    sum_of_inverse_distances = 0
+    for node in city.nodes:
+        # get roads leaving this node
+        exit_roads = city.exit_roads[node]
+        sum_of_inverse_dists = 0
+        for exit_road in exit_roads:
+            sum_of_inverse_dists += 1/exit_road.distance
+        for exit_road in exit_roads:
+            exit_road.probability = (1/exit_road.distance) / sum_of_inverse_dists
     return city
+

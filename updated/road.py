@@ -1,5 +1,5 @@
 class Road:
-    def __init__(self, probability, capacity, distance, node1, node2):
+    def __init__(self, probability = -1, capacity, distance, node1, node2):
         self.probability = probability
         self.capacity = capacity
         self.distance = distance
