@@ -14,43 +14,28 @@ def compute_flows(city, N):
 
     city = copy.deepcopy(city)
     source = city.source
-    # Dictionary with flows through road
-    flows = {}
+
+    # Contains nodes from previous timestep
     prevNodes = [source]
-    flows[-1] = N
+
     # Dictionary with incoming flows into nodes
     nodeFlows = {}
     nodeFlows[source] = N
 
+    # If prevNodes is empty, we have no more nodes with exit roads to update
     while len(prevNodes) > 0:
         succNodes = []
         for node in prevNodes:
             exit_roads = city.exit_roads[node]
             for road in exit_roads:
                 succ = road.node2
-                if road not in flow:
-                    flow[road] = float(nodeFlows[node])*road.probability
-                    if succ not in nodeFlows:
-                        nodeFlows[succ] = float(nodeFlows[node])*road.probability
-                    else:
-                        nodeFlows[succ] += float(nodeFlows[node])*road.probability
+                road.flow += float(nodeFlows[node])*road.probability
+                if succ not in nodeFlows:
+                    nodeFlows[succ] = float(nodeFlows[node])*road.probability
                 else:
-                    flow[road] += float(nodeFlows[node])*road.probability
-                    if succ not in nodeFlows:
-                        nodeFlows[succ] = float(nodeFlows[node])*road.probability
-                    else:
-                        nodeFlows[succ] += float(nodeFlows[node])*road.probability
+                    nodeFlows[succ] += float(nodeFlows[node])*road.probability
                 succNodes.append(succ)
         prevNodes = succNodes
-
-    
-    # Having obtained new flows, update roads in city
-    for road in city.roads:
-        if road in flows:
-            road.flow = flows[road]
-        else:
-            road.flow = 0
-
 
     return city
 
