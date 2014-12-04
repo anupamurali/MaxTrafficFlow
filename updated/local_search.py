@@ -35,7 +35,7 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
-            print curr_best_city, curr_best_score
+            print same_count, curr_best_city, curr_best_score
         return curr_best_city, curr_best_score
 
     def get_successors(self, city):
