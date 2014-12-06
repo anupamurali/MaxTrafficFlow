@@ -1,6 +1,11 @@
 import copy
 
 def compute_flows(city, N):
+     source = city.source
+     for r in source.exit_roads:
+        # TODO
+
+def compute_flows_old(city, N):
     """
     Computes the traffic flow through each road in the city based on the probabilities.
 
