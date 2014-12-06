@@ -27,14 +27,15 @@ def compute_flows(city, N):
         succNodes = []
         for node in prevNodes:
             exit_roads = city.exit_roads[node]
-            for road in exit_roads:
-                succ = road.node2
-                road.flow += float(nodeFlows[node])*road.probability
+            for r in exit_roads:
+                succ = r.node2
+                r.flow += float(nodeFlows[node])*r.probability
                 if succ not in nodeFlows:
-                    nodeFlows[succ] = float(nodeFlows[node])*road.probability
+                    nodeFlows[succ] = float(nodeFlows[node])*r.probability
                 else:
-                    nodeFlows[succ] += float(nodeFlows[node])*road.probability
+                    nodeFlows[succ] += float(nodeFlows[node])*r.probability
                 succNodes.append(succ)
+        # Set new layer for next timestep
         prevNodes = succNodes
 
     return city
