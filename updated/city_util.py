@@ -11,7 +11,7 @@ def compute_flows(city, N):
     Returns:
         The city object with the new flows.
     """
-
+    
     city = copy.deepcopy(city)
     source = city.source
 

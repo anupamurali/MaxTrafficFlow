@@ -34,4 +34,4 @@ class TollBooth(Structure):
         self.discount = 0.80
 
 # A list of all available structures
-ALL_STRUCTURES = [NoStructure, TollBooth, ShoppingCenter]
+ALL_STRUCTURES = [NoStructure, TollBooth]

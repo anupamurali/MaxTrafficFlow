@@ -28,7 +28,7 @@ class City:
         self.__populate_enter_exit()
 
         # Populate the shortest_dists dictionary
-        self.populate_shortest_dists()
+        self.__populate_shortest_dists()
 
     def __populate_enter_exit(self):
         for node in self.nodes:
