@@ -53,18 +53,18 @@ class City:
     # ASSUMPTION: ACYCLIC GRAPH
     def __populate_shortest_dists(self):
         pass
-        #self.shortest_dists[sink] = 0
-        # Q = [sink]
-        # while len(Q) != 0:
-        #     node = find_shortest_dist_node(Q)
-        #     Q.remove(node)
-        #     for enter_road in enter_roads[node]:
-        #         if enter_road.node1 not in Q:
-        #             Q.append(enter_road.node1)
-        #         if enter_road.node1 not in self.shortest_dists:
-        #             self.shortest_dists[enter_road.node1] = enter_road.distance + self.shortest_dists[node]
-        #         else if self.shortest_dists[enter_road.node1] > enter_road.distance + self.shortest_dists[node]:
-        #             self.shortest_dists[enter_road.node1] = enter_road.distance + self.shortest_dists[node]
+        self.shortest_dists[sink] = 0
+        Q = [sink]
+        while len(Q) != 0:
+            node = find_shortest_dist_node(Q)
+            Q.remove(node)
+            for enter_road in enter_roads[node]:
+                if enter_road.node1 not in Q:
+                    Q.append(enter_road.node1)
+                if enter_road.node1 not in self.shortest_dists:
+                    self.shortest_dists[enter_road.node1] = enter_road.distance + self.shortest_dists[node]
+                else if self.shortest_dists[enter_road.node1] > enter_road.distance + self.shortest_dists[node]:
+                    self.shortest_dists[enter_road.node1] = enter_road.distance + self.shortest_dists[node]
                     
             
             

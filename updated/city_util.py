@@ -1,9 +1,28 @@
 import copy
 
 def compute_flows(city, N):
-     source = city.source
-     for r in source.exit_roads:
-        # TODO
+    source = city.source
+    prevNodes = [r.node2 for r in city.exit_roads[source]]
+    nodeFlows = {source:N}
+    while prevNodes:
+        succ = []
+        for node in prevNodes:
+            nodeFlows[node] = 0.0
+            for r in city.enter_roads[node]:
+                r.flow = nodeFlows.get(r.node1,0.0) * r.probability
+                nodeFlows[node] += r.flow
+            succ.extend([r.node2 for r in city.exit_roads[node]])
+        prevNodes = succ
+    return city
+
+def compute_flows_cycles(city, N):
+    source = city.source
+    prevNodes = [r.node2 for r in city.exit_roads[source]]
+
+
+
+
+
 
 def compute_flows_old(city, N):
     """
@@ -100,3 +119,17 @@ def compute_initial_probabilities(city):
             exit_road.probability = (1.0/exit_road.distance) / sum_of_inverse_dists
     return
 
+def compute_probabilities(city):
+    """
+    Computes the probabilities for a city based on road distances and structures. Balances automatically.
+    """
+
+    sum_of_inverse_distances = 0
+    for node in city.nodes:
+        # get roads leaving this node
+        exit_roads = city.exit_roads[node]
+        # sum over 1/d_i
+        sum_of_inverse_dists = sum([1.0*road.node2.structure['discount']/road.distance for road in exit_roads])
+        for exit_road in exit_roads:
+            exit_road.probability = (1.0*exit_road.node2.structure['discount']/exit_road.distance) / sum_of_inverse_dists
+    return
