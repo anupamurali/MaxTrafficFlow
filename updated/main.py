@@ -7,7 +7,26 @@ import util
 import local_search
 import objectives
 
-newCity = util.harder_city()
+
+newCity = util.harder_city_with_cycle()
+city_util.compute_initial_probabilities(newCity)
+util.ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newCity)
+city_util.compute_flows_cycles(newCity, 150)
+for r in newCity.roads:
+    print (r.node1.name, r.node2.name), ":", r.flow
+quit()
+
+
+
+newCity = util.basic_city()
+allPaths = city_util.get_all_paths_to_sink(newCity)
+
+for n in newCity.nodes:
+    print n.name
+    for path in allPaths[n]:
+        print "   ", [nd.name for nd in path]
+
+quit()
 city_util.compute_initial_probabilities(newCity)
 
 hillClimb = local_search.HillClimbing()

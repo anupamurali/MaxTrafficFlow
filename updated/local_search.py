@@ -9,6 +9,10 @@ class LocalSearchAlgorithm:
         raise Exception("Undefined!")
         return city
 
+class BruteForce:
+    def run_algorithm(self, city, objective):
+        pass
+
 class HillClimbing(LocalSearchAlgorithm):
     def __init__(self):
         self.max_no_improvement = 30 # Max # of iterations w/out improvement before the algorithm terminates

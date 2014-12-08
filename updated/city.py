@@ -52,9 +52,11 @@ class City:
 
     # ASSUMPTION: ACYCLIC GRAPH
     def __populate_shortest_dists(self):
+        return
         self.shortest_dists[self.sink] = 0
         Q = [self.sink]
         while len(Q) != 0:
+            print [n.name for n in Q]
             node = self.find_shortest_dist_node(Q)
             Q.remove(node)
             enter_roads = self.enter_roads
