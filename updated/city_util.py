@@ -56,7 +56,7 @@ def compute_flows_cycles(city, N):
         nodeOutFlows[source].append((r.node2, r.probability * N, frozenset([source])))
 
     conseqItersWithNoFlowChange = 0
-    while prevNodes and conseqItersWithNoFlowChange <= 2:
+    while prevNodes and conseqItersWithNoFlowChange <= 1:
         succ = set()
         print [n.name for n in prevNodes]
 
