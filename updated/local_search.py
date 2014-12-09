@@ -35,9 +35,12 @@ class HillClimbing(LocalSearchAlgorithm):
             # Pick the best one
             evaluations.sort(key=lambda x: x[1], reverse=True)
             best_city, best_score = evaluations[0]
-            if best_score[0] > curr_best_score[0]:
+            # Allow Local Search to transition between different solutions with same objective
+            if best_score[0] >= curr_best_score[0]:
                 curr_best_city = best_city
                 curr_best_score = best_score
+            # Only allow it to do this a certain number of times
+            if best_score[0] > curr_best_score[0]:
                 same_count = 0
             else:
                 same_count += 1

@@ -7,7 +7,6 @@ import util
 import local_search
 import objectives
 
-
 newCity = util.harder_city_with_cycle()
 city_util.compute_initial_probabilities(newCity)
 util.ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newCity)
@@ -15,17 +14,12 @@ city_util.compute_flows(newCity, 150)
 for r in newCity.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 
-#
-#
-# TODO: There is a bug! ALL_PATHS_TO_SINK needs to be keyed by node name, not by node object!
-# TODO: If we key by node object, then the successor cities in LocalSearch will have copies of the original nodes
-# TODO: with different addresses and will thus nut be found as keys in the ALL_PATHS_TO_SINK dictionary.
-#
-#
-# hillClimb = local_search.HillClimbing()
-# bestCity, _ = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
-# for n in bestCity.nodes:
-#     print n.name, n.structure['name']
+hillClimb = local_search.HillClimbing()
+bestCity, _ = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
+for n in bestCity.nodes:
+    print n.name, n.structure['name']
+for r in bestCity.roads:
+    print (r.node1.name, r.node2.name), ":", r.flow
 quit()
 
 

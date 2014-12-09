@@ -1,7 +1,7 @@
 import copy
 import util
 
-def compute_flows_old_working(city, N):
+def compute_flows_acyclic(city, N):
     source = city.source
     prevNodes = [r.node2 for r in city.exit_roads[source]]
     nodeFlows = {source:N}
@@ -27,7 +27,7 @@ def get_all_paths_to_sink(city):
         # Typically contains the parent path "node", namely a (node, visited) tuple.
         node_parents = {(start, startvisited): None}
         # We haven't found any paths to the sink from this node yet
-        all_paths[start] = []
+        all_paths[start.name] = []
         # Initialize the queue to contain the start "node" (defined by
         Q = [(start, startvisited)] # (node, visited (incl. node))
         while Q:
@@ -36,9 +36,9 @@ def get_all_paths_to_sink(city):
                 path_nodes = set([sink])
                 parent = node_parents[(node, visited)]
                 while parent:
-                    path_nodes.add(parent[0]) # Add the node itself, excluding the "visited"
+                    path_nodes.add(parent[0].name) # Add the node itself, excluding the "visited"
                     parent = node_parents[parent]
-                all_paths[start].append(path_nodes)
+                all_paths[start.name].append(path_nodes)
             for r in city.exit_roads[node]:
                 if r.node2 not in visited:
                     newvisited = visited.union(frozenset([r.node2]))
@@ -46,132 +46,114 @@ def get_all_paths_to_sink(city):
                     node_parents[(r.node2, newvisited)] = (node, visited)
     return all_paths
 
-def compute_flows(city, N):
-    source = city.source
-    prevNodes = [r.node2 for r in city.exit_roads[source]]
-    nodeInFlows = {source: []} # Dict of { node: [(srcNode, flow, priorPath [excl. this node)] }
-    nodeOutFlows = {source: []} # Dict of {node: [(destNode, flow, priorPath [incl. this node])] }
+def compute_flows_cyclic(city, N):
+    """
+    General approach:
+        Start from the source. Add all the nodes the source is connected to
+        to the list of nodes to visit (prevNodes). Repeat the following steps
+        until there are no more nodes to explore:
+        For each node we need to visit:
+            1) Get all the flows going into this node, differentiated by the paths they took to get there.
+            2a) Determine which exit roads can be traversed from this node, adding them to a list.
+            2b) For each exit road in the above list, send the appropriate amount of flow down it.
+        IMPORTANT: When we use "node" in this function, it refers to the node by name. node_object gives the actual object.
+                   We must refer to nodes by name because we want to use ALL_PATHS_TO_SINK, which is keyed by node name.
+                   It's keyed this way so that all local search successor cities can still use it even though their
+                   node objects are different.
+    """
+    source_object = city.source
+    source = source_object.name
+    prevNodes = [r.node2 for r in city.exit_roads[source_object]]
+    # Defines all flows leaving a given node. Keyed by node name.
+    # Dict of {node: [(destNode, flow, priorPath [incl. this node])] }
+    nodeOutFlows = {source: []}
 
-    for r in city.exit_roads[source]:
-        nodeOutFlows[source].append((r.node2, r.probability * N, frozenset([source])))
+    # Initialize flows leaving source
+    for r in city.exit_roads[source_object]:
+        nodeOutFlows[source].append((r.node2.name, r.probability * N, frozenset([source])))
 
-    flowChangedOnLastIter = True
-    while prevNodes and flowChangedOnLastIter:
+    # Keep going until no more nodes are left to explore (all the flow has reached the sink)
+    while prevNodes:
+        # Set of nodes we have to visit next
         succ = set()
 
-        flowChangedOnLastIter = False
-
-        for node in prevNodes:
+        # Process each node we have left to explore
+        for node_object in prevNodes:
+            node = node_object.name
+            # Define a frozenset so we can union this node into paths later
             node_frozenset = frozenset([node])
-            nodeInFlows[node] = []
+
+            # List of [(srcNode, flow, priorPath [excl. this node])] tuples. Each tuple represents a component
+            # of the total flow.
+            nodeInFlows = []
 
             # STEP 1: Get all component flows coming into this node and update the total road flows accordingly
-            for enter_road in city.enter_roads[node]:
-                origFlow = enter_road.flow
+            # Iterate over all roads entering this node
+            for enter_road in city.enter_roads[node_object]:
                 enter_road.flow = 0
-                enter_node = enter_road.node1
+                enter_node = enter_road.node1.name
+                # If the entering node has an outgoing flow...
                 if enter_node in nodeOutFlows:
+                    # Iterate over all flows leaving the entering node
                     for enter_flow_dest, enter_flow, enter_path in nodeOutFlows[enter_node]:
+                        # If this flow component is entering this node, add the flow component
+                        # to the entering road as well as this node's list of incoming flows.
                         if enter_flow_dest == node:
                             enter_road.flow += enter_flow
-                            nodeInFlows[node].append( (enter_node, enter_flow, enter_path) )
-                if enter_road.flow != origFlow:
-                    flowChangedOnLastIter = True
+                            nodeInFlows.append( (enter_node, enter_flow, enter_path) )
+
             # STEP 2: Propogate incoming component flows to all other nodes
+            # Dict of valid exit roads for the flow that came along a given path.
+            # {path: [exit_road_1,...,exit_road_k]}
             valid_exit_roads = {}
+            # Dict of total probabilities among all exit roads for a given path. Will be useful for re-balancing probabilities
+            # when some roads cannot take any flow. Which roads are available depends on the path, and thus the total
+            # probability does too.
+            # {path: total_prob}
             total_probability = {}
 
             # STEP 2a: Determine which exit_roads can be traversed
-            for enter_node, enter_flow, enter_path in nodeInFlows[node]:
+
+            # Iterate over all flows coming into this node
+            for enter_node, enter_flow, enter_path in nodeInFlows:
                 valid_exit_roads[enter_path] = []
                 total_probability[enter_path] = 0.0
-                for exit_road in city.exit_roads[node]:
-                    exit_node = exit_road.node2
+                # Try each road leaving this node to see if it's valid
+                for exit_road in city.exit_roads[node_object]:
+                    exit_node = exit_road.node2.name
                     # Can't revisit a node already in the path
                     if exit_node not in enter_path:
                         # Can't visit nodes that cannot reach the sink without traversing
                         # nodes already in path
                         for possible_path in util.ALL_PATHS_TO_SINK[exit_node]:
                              if not enter_path.union(node_frozenset).intersection(possible_path):
+                                # If all tests pass, update our list of valid exit roads (and total probabilities)
+                                # for the flow that arrived via this particular enter_path.
                                 total_probability[enter_path] += exit_road.probability
-                                if node.name=="7":
-                                    print "Adding road from ",exit_road.node1.name,"to",exit_road.node2.name,"for enter path",[n.name for n in enter_path]
                                 valid_exit_roads[enter_path].append(exit_road)
                                 break
 
             # STEP 2b: Update outgoing flows
             nodeOutFlows[node] = []
-            for inflow_node, inflow_flow, inflow_path in nodeInFlows[node]:
+            # Iterate over all incoming flows
+            for inflow_node, inflow_flow, inflow_path in nodeInFlows:
+                # Iterate over all valid exits for this particular incoming flow
                 for exit_road in valid_exit_roads[inflow_path]:
-                    exit_node = exit_road.node2
-                    succ.add(exit_node)
+                    exit_node_object = exit_road.node2
+                    exit_node = exit_node_object.name
+                    # Add the node at the other end of this exit to the nodes we must explore
+                    succ.add(exit_node_object)
+                    # Add this flow to the list of flows leaving this node
                     fullpath = inflow_path.union(node_frozenset)
-                    if node.name == "7":
-                        print [f.name for f in fullpath]
                     nodeOutFlows[node].append( (exit_node, inflow_flow * exit_road.probability/total_probability[inflow_path], fullpath) )
 
+        # Update the list of nodes we still must explore
         prevNodes = succ
 
 
 
-
-
-
-
-
-def compute_flows_old(city, N):
-    """
-    Computes the traffic flow through each road in the city based on the probabilities.
-
-    Params:
-        city = A City object
-        N    = The number of cars flowing.
-
-    Returns:
-        The city object with the new flows.
-    """
-
-    city = copy.deepcopy(city)
-    source = city.source
-
-    # Contains nodes from previous timestep
-    prevNodes = [source]
-
-    # Dictionary with incoming flows into nodes
-    # Flow is (totalFlow, flowThatHasntLeftYet)
-    nodeFlows = {}
-    nodeFlows[source] = (N, N)
-
-    # If prevNodes is empty, we have no more nodes with exit roads to update
-
-    # CURRENT ALGORITHM IS WRONG. Next time, try to recompute based on flow of
-    # entering roads each time
-    while len(prevNodes) > 0:
-        print 'prevNodes = ', [nodeFlows[n] for n in prevNodes]
-        print 'prevNames = ', [n.name for n in prevNodes]
-        print 'road flows = ', [r.flow for r in city.roads]
-        succNodes = []
-        for node in prevNodes:
-            exit_roads = city.exit_roads[node]
-            flowGone = 0
-            for r in exit_roads:
-                succ = r.node2
-                if node in nodeFlows:
-                    r.flow += float(nodeFlows[node][1])*r.probability
-                    if succ not in nodeFlows:
-                        nodeFlows[succ] = (float(nodeFlows[node][1])*r.probability,float(nodeFlows[node][1])*r.probability)
-                    else:
-                        addFlow = float(nodeFlows[node][1])*r.probability
-                        nodeFlows[succ] = (nodeFlows[succ][0] + addFlow, nodeFlows[succ][1] + addFlow)
-                        flowGone += float(nodeFlows[node][1])*r.probability      
-                succNodes.append(succ)
-            nodeFlows[node] = (nodeFlows[node][0], nodeFlows[node][1] - flowGone)
-        # Set new layer for next timestep
-        prevNodes = succNodes
-
-    print nodeFlows    
-
-    return city
+def compute_flows(city, N):
+    return compute_flows_cyclic(city,N)
 
 def balance_probabilities(city):
     """
@@ -226,5 +208,12 @@ def compute_probabilities(city):
         # sum over 1/d_i
         sum_of_inverse_dists = sum([1.0*road.node2.structure['discount']/road.distance for road in exit_roads])
         for exit_road in exit_roads:
-            exit_road.probability = (1.0*exit_road.node2.structure['discount']/exit_road.distance) / sum_of_inverse_dists
+            exit_road.probability = (1.0*exit_road.node2.structure['discount']/road.distance) / sum_of_inverse_dists
     return
+
+
+def export_city_graph(city):
+    """
+    Exports the graph for the given city.
+    """
+    pass
