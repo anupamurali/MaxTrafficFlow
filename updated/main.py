@@ -14,8 +14,9 @@ city_util.compute_flows(newCity, 150)
 for r in newCity.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 
-hillClimb = local_search.HillClimbing()
-bestCity, _ = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
+hillClimb = local_search.BruteForce()
+bestCity, bestObj = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
+print 'obj  = ',bestObj
 for n in bestCity.nodes:
     print n.name, n.structure['name']
 for r in bestCity.roads:

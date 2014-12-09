@@ -10,8 +10,55 @@ class LocalSearchAlgorithm:
         return city
 
 class BruteForce:
+    def get_structure_combinations(self,city):
+        """
+        For a city of length n, each node containing k possible structures, obtain
+        all k^n possible cities with all combinations of structures
+
+        Params:
+            city = City object
+
+        Returns:
+            cities = List of cities with all possible structure combinations
+        """
+        n = len(city.nodes)
+        allStructures = structure.ALL_STRUCTURES
+        prevComb = [[i] for i in allStructures]
+        # Build up list of permutations
+        for i in xrange(n):
+            new = []
+            for struct in allStructures:
+                for combo in prevComb:
+                    newCombo = copy.deepcopy(combo)
+                    newCombo.append(struct)
+                    new.append(newCombo)
+            # Can discard previous layer
+            prevComb = new
+
+        # Return list of cities with structures
+        cities = []
+        for comb in prevComb:
+            newCity = copy.deepcopy(city)
+            for i in xrange(n):
+                newCity.nodes[i].structure = comb[i]
+            city_util.compute_probabilities(newCity)
+            city_util.compute_flows(newCity,NUMBER_OF_CARS)
+            cities.append(newCity)
+
+        return cities
+
     def run_algorithm(self, city, objective):
-        pass
+        allCombinations = self.get_structure_combinations(city)      
+        best_score = -1000000
+        best_objective = (best_score,{})
+        for c in allCombinations:
+            obj = objective(c)
+            if obj[0] > best_score:
+                best_city = c
+                best_objective = obj
+                best_score = best_objective[0]
+        return best_city, best_objective
+
 
 class HillClimbing(LocalSearchAlgorithm):
     def __init__(self):
