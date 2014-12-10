@@ -6,7 +6,6 @@ import structure
 import util
 import local_search
 import objectives
-import time
 
 newCity = util.harder_city_with_cycle()
 city_util.compute_initial_probabilities(newCity)
@@ -35,6 +34,7 @@ simAnnealTime = time.time() - starttime
 
 print 'BRUTE FORCE: ',bestObj[0]
 print '    TIME: ', bruteForceTime
+
 for n in bestCity.nodes:
     print n.name, n.structure['name']
 for r in bestCity.roads:
@@ -46,6 +46,20 @@ for n in bestCityHill.nodes:
     print n.name, n.structure['name']
 for r in bestCityHill.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
+quit()
+
+
+
+newCity = util.basic_city()
+allPaths = city_util.get_all_paths_to_sink(newCity)
+
+for n in newCity.nodes:
+    print n.name
+    for path in allPaths[n]:
+        print "   ", [nd.name for nd in path]
+
+quit()
+city_util.compute_initial_probabilities(newCity)
 
 print 'SIMULATED ANNEALING: ',bestObjAnneal[0]
 print '    TIME:', simAnnealTime
