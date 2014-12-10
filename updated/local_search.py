@@ -93,17 +93,7 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> parent of 348df55... fixed merge conflicts
-=======
->>>>>>> parent of 348df55... fixed merge conflicts
-=======
->>>>>>> parent of 348df55... fixed merge conflicts
-        return curr_best_city, curr_best_score
 
     def get_successors(self, city):
         # Returns a list of successor cities, each of which differs by 1 change from the original
