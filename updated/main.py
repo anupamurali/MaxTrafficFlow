@@ -68,6 +68,13 @@ for n in bestCityBeam.nodes:
 for r in bestCityBeam.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 
+print 'SIMULATED ANNEALING: ',bestObjAnneal[0]
+print '    TIME:', simAnnealTime
+for n in bestCityAnneal.nodes:
+    print n.name, n.structure['name']
+for r in bestCityAnneal.roads:
+    print (r.node1.name, r.node2.name), ":", r.flow
+
 
 print "OBJECTIVE DIFFERENCE (brute - hill): ",bestObj[0] - bestObjHill[0]
 print "TIME DIFFERENCE (brute - hill): ", bruteForceTime - hillClimbTime
@@ -95,12 +102,7 @@ city_util.compute_initial_probabilities(newCity)
 
 
 
-print 'SIMULATED ANNEALING: ',bestObjAnneal[0]
-print '    TIME:', simAnnealTime
-for n in bestCityAnneal.nodes:
-    print n.name, n.structure['name']
-for r in bestCityAnneal.roads:
-    print (r.node1.name, r.node2.name), ":", r.flow
+
     
 
 quit()

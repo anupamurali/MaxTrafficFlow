@@ -9,4 +9,4 @@ def profit_and_congestion(argcity):
         totalProfit += -node.structure['cost'] + sum([r.flow * node.structure['revenue'] for r in argcity.enter_roads[node]])
     for r in argcity.roads:
         totalCongestion += max(r.flow - r.capacity, 0.0)
-    return (totalCongestion), {"profit": totalProfit, "congestion": totalCongestion}
+    return (totalProfit), {"profit": totalProfit, "congestion": totalCongestion}
