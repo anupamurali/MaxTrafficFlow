@@ -78,6 +78,7 @@ class HillClimbing(LocalSearchAlgorithm):
             for successor in successors:
                 city_util.compute_probabilities(successor)
                 city_util.compute_flows(successor, NUMBER_OF_CARS)
+                print "HC OBJECTIVE:", objective(successor)
                 # Add (successor, objective value) pair to list of evaluated successors
                 evaluations.append( (successor, objective(successor) ) )
             # Pick the best one
@@ -92,7 +93,6 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
-
         return curr_best_city, curr_best_score
 
     def get_successors(self, city):
@@ -114,28 +114,36 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
     def __init__(self):
         self.tmax = 200 # Max num iterations before algorithm terminates   
 
-    def acceptance_probability(curr_best_score, successor_score, temperature):
-        if successor_score > curr_best_score:
+    # calculates probability of accepting successor city as next to explore
+    def accept_prob(self, curr_best_score, successor_score, temperature):
+        #print curr_best_score
+        #print successor_score
+        s = successor_score[0]
+        c = curr_best_score[0]
+        if s >= c:
             return 1
         else:
-            return (successor_score / curr_best_score) / temperature
+            return s / c * temperature
 
     def run_algorithm(self, city, objective):
         curr_best_city, curr_best_score = (city, objective(city))
         city_util.compute_probabilities(city)
-        city_util.compute_flows(city.NUMBER_OF_CARS)
+        city_util.compute_flows(city, NUMBER_OF_CARS)
         t = 0
         while t < self.tmax:
-            temperature = (self.tmax - t) / self.tmax
-            successor_city = get_random_successor(curr_best_city)
+            temperature = (self.tmax - t) / float(self.tmax)
+            successor_city = random.choice(self.get_successors(curr_best_city))
+            city_util.compute_probabilities(successor_city)
+            city_util.compute_flows(successor_city, NUMBER_OF_CARS)
             successor_score = objective(successor_city)
-            if acceptance_probability(curr_best_score, successor_score, temperature) > random.random():
+            print "SA OBJECTIVE:", successor_score
+            if self.accept_prob(curr_best_score, successor_score, temperature) > random.random():
                 curr_best_city = successor_city
                 curr_best_score = successor_score
             t += 1
         return curr_best_city, curr_best_score
 
-    def get_random_successor(self, city):
+    def get_successors(self, city):
         successors = []
         for i in xrange(len(city.nodes)):
             other_structures = [s for s in structure.ALL_STRUCTURES if s != city.nodes[i].structure]
@@ -143,7 +151,4 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
                 new_city = copy.deepcopy(city)
                 new_city.nodes[i].stucture = other
                 successors.append(new_city)
-        return random.choice(successors)
-
-
-
+        return successors
