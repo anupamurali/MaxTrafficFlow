@@ -94,6 +94,10 @@ class HillClimbing(LocalSearchAlgorithm):
             else:
                 same_count += 1
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+            print same_count, curr_best_city, curr_best_score
+>>>>>>> parent of 6dcc436... fixed main
 =======
             print same_count, curr_best_city, curr_best_score
 >>>>>>> parent of 6dcc436... fixed main

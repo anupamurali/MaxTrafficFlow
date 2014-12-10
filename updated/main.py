@@ -14,6 +14,7 @@ city_util.compute_flows(newCity, 150)
 for r in newCity.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 
+<<<<<<< HEAD
 starttime = time.time()
 bruteForce = local_search.BruteForce()
 for _ in xrange(1):
@@ -35,10 +36,16 @@ simAnnealTime = time.time() - starttime
 print 'BRUTE FORCE: ',bestObj[0]
 print '    TIME: ', bruteForceTime
 
+=======
+hillClimb = local_search.BruteForce()
+bestCity, bestObj = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
+print 'obj  = ',bestObj
+>>>>>>> parent of 6dcc436... fixed main
 for n in bestCity.nodes:
     print n.name, n.structure['name']
 for r in bestCity.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
+<<<<<<< HEAD
     
 print 'HILL CLIMB: ',bestObjHill[0]
 print '    TIME:', hillClimbTime
@@ -46,6 +53,8 @@ for n in bestCityHill.nodes:
     print n.name, n.structure['name']
 for r in bestCityHill.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
+=======
+>>>>>>> parent of 6dcc436... fixed main
 quit()
 
 
