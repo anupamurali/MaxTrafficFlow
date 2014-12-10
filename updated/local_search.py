@@ -94,7 +94,10 @@ class HillClimbing(LocalSearchAlgorithm):
             else:
                 same_count += 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 348df55... fixed merge conflicts
 =======
 >>>>>>> parent of 348df55... fixed merge conflicts
         return curr_best_city, curr_best_score
