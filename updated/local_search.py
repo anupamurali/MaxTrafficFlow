@@ -93,7 +93,10 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 348df55... fixed merge conflicts
         return curr_best_city, curr_best_score
 
     def get_successors(self, city):

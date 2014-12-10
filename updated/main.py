@@ -38,12 +38,15 @@ print 'BRUTE FORCE: ',bestObj[0]
 print '    TIME: ', bruteForceTime
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 hillClimb = local_search.BruteForce()
 bestCity, bestObj = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
 print 'obj  = ',bestObj
 >>>>>>> parent of 6dcc436... fixed main
+=======
+>>>>>>> parent of 348df55... fixed merge conflicts
 =======
 >>>>>>> parent of 348df55... fixed merge conflicts
 =======
@@ -62,6 +65,7 @@ for r in bestCityHill.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 6dcc436... fixed main
 quit()
@@ -78,6 +82,8 @@ for n in newCity.nodes:
 
 quit()
 city_util.compute_initial_probabilities(newCity)
+=======
+>>>>>>> parent of 348df55... fixed merge conflicts
 =======
 >>>>>>> parent of 348df55... fixed merge conflicts
 =======
