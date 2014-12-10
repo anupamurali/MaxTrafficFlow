@@ -78,7 +78,7 @@ class HillClimbing(LocalSearchAlgorithm):
             for successor in successors:
                 city_util.compute_probabilities(successor)
                 city_util.compute_flows(successor, NUMBER_OF_CARS)
-                print "HC OBJECTIVE:", objective(successor)
+                #print "HC OBJECTIVE:", objective(successor)
                 # Add (successor, objective value) pair to list of evaluated successors
                 evaluations.append( (successor, objective(successor) ) )
             # Pick the best one
@@ -93,6 +93,7 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
+        return curr_best_city, curr_best_score
 
 
     def get_successors(self, city):
@@ -136,7 +137,7 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
             city_util.compute_probabilities(successor_city)
             city_util.compute_flows(successor_city, NUMBER_OF_CARS)
             successor_score = objective(successor_city)
-            print "SA OBJECTIVE:", successor_score
+            #print "SA OBJECTIVE:", successor_score
             if self.accept_prob(curr_best_score, successor_score, temperature) > random.random():
                 curr_best_city = successor_city
                 curr_best_score = successor_score
@@ -152,3 +153,58 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
                 new_city.nodes[i].stucture = other
                 successors.append(new_city)
         return successors
+
+class BeamSearch(LocalSearchAlgorithm):
+    def __init__(self):
+        self.memory = 6
+        self.max_no_improvement = 3
+
+
+    def run_algorithm(self, city, objective):
+        # Get 'memory' best successors
+        city_util.compute_probabilities(city)
+        city_util.compute_flows(city, NUMBER_OF_CARS)
+        successors = self.get_successors(city, objective, self.memory)
+        best_city, best_score = city, objective(city)
+
+        # Keep track of how much best score changes
+        same_count = 0
+
+        # If static for too long, exit
+        while(same_count <= self.max_no_improvement):
+            # Successor is sorted, so curr_city is best city in successors
+            curr_city, score = successors.pop(0)
+            if score[0] <= best_score[0]:
+                same_count += 1
+            else:
+                same_count = 0 
+                best_score = score
+                best_city = curr_city
+            # Successors of current city
+            curr_successors = self.get_successors(curr_city, objective, self.memory)
+            for c in curr_successors:
+                successors.append(c)
+            successors.sort(key=lambda x: x[1][0], reverse = True)
+            successors = successors[:self.memory]
+            
+        return best_city, best_score
+
+    def get_successors(self, city, objective, width):
+        successors = []
+        for i in xrange(len(city.nodes)):
+            other_structures = [s for s in structure.ALL_STRUCTURES if s != city.nodes[i].structure]
+            for other in other_structures:
+                new_city = copy.deepcopy(city)
+                new_city.nodes[i].structure = other
+                city_util.compute_probabilities(new_city)
+                city_util.compute_flows(new_city, NUMBER_OF_CARS)
+                successors.append((new_city,objective(new_city)))
+        # Sort according to objective score
+        successors.sort(key=lambda x: x[1][0], reverse = True)
+        # Return best successors
+        if width <= len(successors):
+            return successors[:width]
+        else:
+            return successors
+
+
