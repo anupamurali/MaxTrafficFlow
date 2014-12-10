@@ -95,7 +95,10 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count += 1
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 348df55... fixed merge conflicts
 =======
 >>>>>>> parent of 348df55... fixed merge conflicts
 =======
