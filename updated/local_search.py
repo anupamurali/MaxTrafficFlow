@@ -2,6 +2,7 @@ import copy
 import structure
 import city_util
 from util import NUMBER_OF_CARS
+import random
 
 class LocalSearchAlgorithm:
     def run_algorithm(self, city, objective):
@@ -62,7 +63,7 @@ class BruteForce:
 
 class HillClimbing(LocalSearchAlgorithm):
     def __init__(self):
-        self.max_no_improvement = 30 # Max # of iterations w/out improvement before the algorithm terminates
+        self.max_no_improvement = 30 # Max num iterations w/out improvement before the algorithm terminates
 
     def run_algorithm(self, city, objective):
         same_count = 0
@@ -109,7 +110,40 @@ class HillClimbing(LocalSearchAlgorithm):
                 successors.append(new_city)
         return successors
 
+class SimulatedAnnealing(LocalSearchAlgorithm):
+    def __init__(self):
+        self.tmax = 200 # Max num iterations before algorithm terminates   
 
+    def acceptance_probability(curr_best_score, successor_score, temperature):
+        if successor_score > curr_best_score:
+            return 1
+        else:
+            return (successor_score / curr_best_score) / temperature
+
+    def run_algorithm(self, city, objective):
+        curr_best_city, curr_best_score = (city, objective(city))
+        city_util.compute_probabilities(city)
+        city_util.compute_flows(city.NUMBER_OF_CARS)
+        t = 0
+        while t < self.tmax:
+            temperature = (self.tmax - t) / self.tmax
+            successor_city = get_random_successor(curr_best_city)
+            successor_score = objective(successor_city)
+            if acceptance_probability(curr_best_score, successor_score, temperature) > random.random():
+                curr_best_city = successor_city
+                curr_best_score = successor_score
+            t += 1
+        return curr_best_city, curr_best_score
+
+    def get_random_successor(self, city):
+        successors = []
+        for i in xrange(len(city.nodes)):
+            other_structures = [s for s in structure.ALL_STRUCTURES if s != city.nodes[i].structure]
+            for other in other_structures:
+                new_city = copy.deepcopy(city)
+                new_city.nodes[i].stucture = other
+                successors.append(new_city)
+        return random.choice(successors)
 
 
 
