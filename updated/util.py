@@ -5,6 +5,7 @@ import structure
 import city_util
 
 NUMBER_OF_CARS = 150
+INFINITY = 999999999
 ALL_PATHS_TO_SINK = None
 
 def basic_city():

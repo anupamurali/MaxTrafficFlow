@@ -1,7 +1,7 @@
 import copy
 import structure
 import city_util
-from util import NUMBER_OF_CARS
+from util import NUMBER_OF_CARS, INFINITY
 import random
 
 class LocalSearchAlgorithm:
@@ -9,6 +9,24 @@ class LocalSearchAlgorithm:
         # Given a city, it returns the most optimal city it could find using the objective provided as well as the objective value.
         raise Exception("Undefined!")
         return city
+
+    def get_successors(self, city, objective, width=INFINITY):
+        successors = []
+        for i in xrange(len(city.nodes)):
+            other_structures = [s for s in structure.ALL_STRUCTURES if s != city.nodes[i].structure]
+            for other in other_structures:
+                new_city = copy.deepcopy(city)
+                new_city.nodes[i].structure = other
+                city_util.compute_probabilities(new_city)
+                city_util.compute_flows(new_city, NUMBER_OF_CARS)
+                successors.append((new_city,objective(new_city)))
+        # Sort according to objective score
+        successors.sort(key=lambda x: x[1][0], reverse = True)
+        # Return best successors
+        if width <= len(successors):
+            return successors[:width]
+        else:
+            return successors
 
 class BruteForce:
     def get_structure_combinations(self,city):
@@ -72,18 +90,8 @@ class HillClimbing(LocalSearchAlgorithm):
         city_util.compute_flows(city,NUMBER_OF_CARS)
         while same_count <= self.max_no_improvement:
             # Get all successors
-            successors = self.get_successors(curr_best_city)
-            # Evaluate each one
-            evaluations = []
-            for successor in successors:
-                city_util.compute_probabilities(successor)
-                city_util.compute_flows(successor, NUMBER_OF_CARS)
-                #print "HC OBJECTIVE:", objective(successor)
-                # Add (successor, objective value) pair to list of evaluated successors
-                evaluations.append( (successor, objective(successor) ) )
-            # Pick the best one
-            evaluations.sort(key=lambda x: x[1], reverse=True)
-            best_city, best_score = evaluations[0]
+            successors = self.get_successors(curr_best_city, objective, 1)
+            best_city, best_score = successors[0]
             # Allow Local Search to transition between different solutions with same objective
             if best_score[0] >= curr_best_score[0]:
                 curr_best_city = best_city
@@ -94,22 +102,6 @@ class HillClimbing(LocalSearchAlgorithm):
             else:
                 same_count += 1
         return curr_best_city, curr_best_score
-
-
-    def get_successors(self, city):
-        # Returns a list of successor cities, each of which differs by 1 change from the original
-        successors = []
-        # Go over every node
-        for i in xrange(len(city.nodes)):
-            other_structures = [s for s in structure.ALL_STRUCTURES if s != city.nodes[i].structure]
-            # Go over every possible structure we can change it to
-            for other in other_structures:
-                # Create a new city to change one node in
-                new_city = copy.deepcopy(city)
-                new_city.nodes[i].structure = other
-                # Add this new city to the successors
-                successors.append(new_city)
-        return successors
 
 class SimulatedAnnealing(LocalSearchAlgorithm):
     def __init__(self):
@@ -133,10 +125,7 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
         t = 0
         while t < self.tmax:
             temperature = (self.tmax - t) / float(self.tmax)
-            successor_city = random.choice(self.get_successors(curr_best_city))
-            city_util.compute_probabilities(successor_city)
-            city_util.compute_flows(successor_city, NUMBER_OF_CARS)
-            successor_score = objective(successor_city)
+            successor_city, successor_score = random.choice(self.get_successors(curr_best_city, objective))
             #print "SA OBJECTIVE:", successor_score
             if self.accept_prob(curr_best_score, successor_score, temperature) > random.random():
                 curr_best_city = successor_city
@@ -144,15 +133,6 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
             t += 1
         return curr_best_city, curr_best_score
 
-    def get_successors(self, city):
-        successors = []
-        for i in xrange(len(city.nodes)):
-            other_structures = [s for s in structure.ALL_STRUCTURES if s != city.nodes[i].structure]
-            for other in other_structures:
-                new_city = copy.deepcopy(city)
-                new_city.nodes[i].stucture = other
-                successors.append(new_city)
-        return successors
 
 class BeamSearch(LocalSearchAlgorithm):
     def __init__(self):
