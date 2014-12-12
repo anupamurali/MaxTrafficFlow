@@ -3,6 +3,7 @@ import road
 import node
 import structure
 import city_util
+import json
 
 NUMBER_OF_CARS = 150
 ALL_PATHS_TO_SINK = None
@@ -52,4 +53,24 @@ def harder_city_with_cycle():
     print "Computing all paths"
     ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newcity)
     print "Done!"
+    return newcity
+
+def load_city_from_data(citydata_file):
+    with open(citydata_file) as f:
+        all_nodes = json.load(f)
+    nodes = {}
+    roads = []
+    max_road_dist = max([dist for _, data in all_nodes.iteritems() for _, dist in data["edges"]])
+    for id in all_nodes.keys():
+        nodes[id] = node.Node(structure.NoStructure, name=id)
+    for id, data in all_nodes.iteritems():
+        for dest, dist in data["edges"]:
+            # Default road capacity is to hold 25% of all cars at once on the longest road, and fewer on other roads.
+            cap = dist/max_road_dist * NUMBER_OF_CARS * 0.25
+            roads.append(road.Road(cap, dist, nodes[id], nodes[dest]))
+    src = nodes["s"]
+    sink = nodes["t"]
+    nodes = [n for _, n in nodes.iteritems()]
+    nodes.sort(key=lambda n: n.name)
+    newcity = city.City(nodes, roads, src, sink)
     return newcity
