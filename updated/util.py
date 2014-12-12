@@ -5,7 +5,7 @@ import structure
 import city_util
 import json
 
-NUMBER_OF_CARS = 1500
+NUMBER_OF_CARS = 430
 INFINITY = 999999999
 ALL_PATHS_TO_SINK = None
 
@@ -79,7 +79,7 @@ def load_city_from_data(citydata_file):
     for id, data in all_nodes.iteritems():
         for dest, dist in data["edges"]:
             # Default road capacity is to hold 25% of all cars at once on the longest road, and fewer on other roads.
-            cap = dist/max_road_dist * NUMBER_OF_CARS * 0.25
+            cap = dist*1.0/max_road_dist * NUMBER_OF_CARS * 0.25
             roads.append(road.Road(cap, dist, nodes[id], nodes[dest]))
     src = nodes["s"]
     sink = nodes["t"]

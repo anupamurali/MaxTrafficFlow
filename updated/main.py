@@ -6,18 +6,32 @@ import structure
 import util
 import local_search
 import objectives
-import time
+import time, sys
+
+# Load a default city
+newCity = util.another_city()
 
 
-newCity = util.load_city_from_data('test_city.json')
+#------------------------------------------------------
+# COMMENT OUT THESE LINES IF YOU DON'T HAVE PYTHON IMAGE LIBRARY INSTALLED!
+from image_to_citydata import export_colored_image, import_from_json
+infile = None
+if len(sys.argv) > 1:
+    infile = sys.argv[1]
+    infile_image = sys.argv[2]
 
-city_util.compute_initial_probabilities(newCity)
+if infile:
+    newCity = util.load_city_from_data(infile)
+#----------------------------------------------------
+
+
+city_util.compute_probabilities(newCity)
 util.ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newCity)
-city_util.compute_flows(newCity, 150)
+city_util.compute_flows(newCity, util.NUMBER_OF_CARS)
 
 
 for r in newCity.roads:
-    print (r.node1.name, r.node2.name), ":", r.flow
+    print (r.node1.name, r.node2.name), ":", r.flow, r.capacity
 
 """
 TESTING FOR BRUTE FORCE
@@ -33,8 +47,6 @@ for r in newCity.roads:
 print " "
 for r in bestCity.roads:
     print r.node1.name, r.node2.name, r.probability
-print "THERE ARE ",len(newCity.roads), "ROADS"
-print "THERE ARE ", len(bestCity.roads), "ROADS"
 
 """
 TESTING FOR HILL CLIMBING
@@ -108,6 +120,17 @@ print "TIME DIFFERENCE (hill - beam): ", hillClimbTime - beamSearchTime
 print "OBJECTIVE DIFFERENCE (brute - anneal): ",bestObj[0] - bestObjAnneal[0]
 print "TIME DIFFERENCE (brute - anneal): ", bruteForceTime - simAnnealTime
 
+#---------------------------------------
+# COMMENT OUT THESE LINES IF YOU DON'T HAVE PIL INSTALLED!
+if infile:
+
+    coloring = []
+    coloring = [(n.name, n.structure["color"]) for n in bestCityBeam.nodes if n.structure["color"] is not None]
+    all_nodes = import_from_json(infile)
+    filename, ext = infile_image.split('.')
+    outfile_image = filename + "_optimal." + ext
+    export_colored_image(all_nodes, coloring, infile_image, outfile_image)
+#---------------------------------------
 
 
 

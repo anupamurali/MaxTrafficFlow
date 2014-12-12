@@ -7,13 +7,14 @@ ALL_DIRECTIONS =  [(-1, 0), (-1, -1), (-1, 1), (0, -1), (0, 1), (1,-1), (1,0), (
 from PIL import Image, ImageFont, ImageDraw
 import sys
 import json
+import random
 
 def load_image(imgfile):
     im = Image.open(imgfile)
     width, height = im.size
     rgb_im = im.convert('RGB')
     pixelmap = [[rgb_im.getpixel((x, y)) for y in xrange(height)] for x in xrange(width)]
-    return pixelmap
+    return pixelmap, im
 
 def find_node_with_color(pixels, color):
     width = len(pixels)
@@ -164,6 +165,16 @@ def export_labeled_image(all_nodes, inimgfile, outimgfile):
         draw.text(pos,id,(0,0,0),font=font)
     img.save(outimgfile)
 
+def export_colored_image(all_nodes, colorings, inimgfile, outimgfile):
+    pixels, im = load_image(inimgfile)
+    pixdata = im.load()
+    for id, color in colorings:
+        surround = get_node_component_pixels(pixels, all_nodes[id]["pos"])
+        for x,y in surround:
+            if random.random()<0.60:
+                pixdata[x,y] = color
+    im.save(outimgfile)
+
 
 def import_from_json(filename):
     with open(filename, "r") as f:
@@ -173,7 +184,7 @@ def import_from_json(filename):
 def convert_image_to_citydata(image_file, outfile, outimgfile):
     next_id_generator = get_next_id()
 
-    pixels = load_image(image_file)
+    pixels, _ = load_image(image_file)
 
     # Create container for all nodes we've saved
     all_nodes = {}
@@ -227,6 +238,6 @@ def convert_image_to_citydata(image_file, outfile, outimgfile):
 if __name__ == "__main__":
     image_file = sys.argv[1]
     name, ext = image_file.split('.')
-    outfile = name + "_city.json"
+    outfile = name + ".json"
     outimgfile = name + "_labeled." + ext
     convert_image_to_citydata(image_file, outfile, outimgfile)

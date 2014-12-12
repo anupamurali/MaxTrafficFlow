@@ -205,19 +205,35 @@ def compute_initial_probabilities(city):
             exit_road.probability = (1.0/exit_road.distance) / sum_of_inverse_dists
     return
 
+'''
 def compute_probabilities(city):
     """
     Computes the probabilities for a city based on road distances and structures. Balances automatically.
     """
 
-    sum_of_inverse_distances = 0
     for node in city.nodes:
         # get roads leaving this node
         exit_roads = city.exit_roads[node]
         # sum over 1/d_i
         sum_of_inverse_dists = sum([1.0*road.node2.structure['discount']/(road.distance + city.shortest_dists[road.node2]) for road in exit_roads])
         for exit_road in exit_roads:
-            exit_road.probability = (1.0*exit_road.node2.structure['discount']/(road.distance + city.shortest_dists[road.node2])) / sum_of_inverse_dists
+            exit_road.probability = (1.0*exit_road.node2.structure['discount']/(exit_road.distance + city.shortest_dists[exit_road.node2])) / sum_of_inverse_dists
+    return
+'''
+
+def compute_probabilities(city):
+    """
+    Computes the probabilities for a city based on road distances and structures. Balances automatically.
+    Structures cannot affect flows into the sink.
+    """
+
+    for node in city.nodes:
+        # get roads leaving this node
+        exit_roads = city.exit_roads[node]
+        # sum over 1/d_i
+        sum_of_inverse_dists = sum([max(int(city.sink == road.node2),1.0*road.node2.structure['discount']/(road.distance + city.shortest_dists[road.node2])) for road in exit_roads])
+        for exit_road in exit_roads:
+            exit_road.probability = (max(int(city.sink == road.node2), 1.0*exit_road.node2.structure['discount']/(exit_road.distance + city.shortest_dists[exit_road.node2]))) / sum_of_inverse_dists
     return
 
 def compute_max_profit_congestion(city, searchAlgorithm):
