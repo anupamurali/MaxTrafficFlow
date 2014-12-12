@@ -100,9 +100,9 @@ class HillClimbing(LocalSearchAlgorithm):
 
     def run_algorithm(self, city, objective):
         same_count = 0
-        curr_best_city, curr_best_score = (city, objective(city))
         city_util.compute_probabilities(city)
         city_util.compute_flows(city,NUMBER_OF_CARS)
+        curr_best_city, curr_best_score = (city, objective(city))
         while same_count <= self.max_no_improvement:
             # Get all successors
             successors = self.get_successors(curr_best_city, objective, 1)
@@ -136,9 +136,9 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
             return math.exp((s-c)/temperature)
 
     def run_algorithm(self, city, objective):
-        curr_best_city, curr_best_score = (city, objective(city))
         city_util.compute_probabilities(city)
         city_util.compute_flows(city, NUMBER_OF_CARS)
+        curr_best_city, curr_best_score = (city, objective(city))
         t = 0
         while t < self.tmax:
             temperature = (self.tmax - t) / float(self.tmax)
