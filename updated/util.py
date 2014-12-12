@@ -4,7 +4,7 @@ import node
 import structure
 import city_util
 
-NUMBER_OF_CARS = 150
+NUMBER_OF_CARS = 1500
 INFINITY = 999999999
 ALL_PATHS_TO_SINK = None
 
@@ -53,4 +53,16 @@ def harder_city_with_cycle():
     print "Computing all paths"
     ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newcity)
     print "Done!"
+    return newcity
+
+def another_city():
+    nodes = [node.Node(structure.NoStructure,name=str(i)) for i in xrange(11)]
+    cap = 40
+    dist = 40
+    connections = [(0,1),(0,2),(1,2),(2,1),(0,3),(3,6),(2,5),(2,6),(1,4),(4,5),(4,9),(5,8),(5,1),(5,9),(6,2),(6,7),(6,8),(7,10),(8,9),(8,10),(9,10)]
+    special_dists = {}
+    special_dists = {(3,6): 15, (1,4): 50, (5,8): 30, (1,2): 30}
+    roads = [road.Road(cap, special_dists.get((c[0], c[1]), dist), nodes[c[0]], nodes[c[1]]) for c in connections]
+    newcity = city.City(nodes, roads, nodes[0], nodes[-1])
+    ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newcity)
     return newcity

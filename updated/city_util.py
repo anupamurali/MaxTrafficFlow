@@ -75,7 +75,12 @@ def compute_flows_cyclic(city, N):
         nodeOutFlows[source].append((r.node2.name, r.probability * N, frozenset([source])))
 
     # Keep going until no more nodes are left to explore (all the flow has reached the sink)
-    while prevNodes:
+    # or we see the same flows again (no more updates)
+    flowHasChanged = True
+    while prevNodes and flowHasChanged:
+        print [n.name for n in prevNodes]
+        flowHasChanged = False
+
         # Set of nodes we have to visit next
         succ = set()
 
@@ -92,6 +97,7 @@ def compute_flows_cyclic(city, N):
             # STEP 1: Get all component flows coming into this node and update the total road flows accordingly
             # Iterate over all roads entering this node
             for enter_road in city.enter_roads[node_object]:
+                orig_flow = enter_road.flow
                 enter_road.flow = 0
                 enter_node = enter_road.node1.name
                 # If the entering node has an outgoing flow...
@@ -103,6 +109,9 @@ def compute_flows_cyclic(city, N):
                         if enter_flow_dest == node:
                             enter_road.flow += enter_flow
                             nodeInFlows.append( (enter_node, enter_flow, enter_path) )
+                # If flow changes, must run another iteration
+                if orig_flow != enter_road.flow:
+                    flowHasChanged = True
 
             # STEP 2: Propogate incoming component flows to all other nodes
             # Dict of valid exit roads for the flow that came along a given path.
@@ -139,6 +148,8 @@ def compute_flows_cyclic(city, N):
             nodeOutFlows[node] = []
             # Iterate over all incoming flows
             for inflow_node, inflow_flow, inflow_path in nodeInFlows:
+                if node == "2":
+                    print node, inflow_path, [r.node2.name for r in valid_exit_roads[inflow_path]]
                 # Iterate over all valid exits for this particular incoming flow
                 for exit_road in valid_exit_roads[inflow_path]:
                     exit_node_object = exit_road.node2
@@ -208,9 +219,9 @@ def compute_probabilities(city):
         # get roads leaving this node
         exit_roads = city.exit_roads[node]
         # sum over 1/d_i
-        sum_of_inverse_dists = sum([1.0*road.node2.structure['discount']/road.distance for road in exit_roads])
+        sum_of_inverse_dists = sum([1.0*road.node2.structure['discount']/(road.distance + city.shortest_dists[road.node2]) for road in exit_roads])
         for exit_road in exit_roads:
-            exit_road.probability = (1.0*exit_road.node2.structure['discount']/road.distance) / sum_of_inverse_dists
+            exit_road.probability = (1.0*exit_road.node2.structure['discount']/(road.distance + city.shortest_dists[road.node2])) / sum_of_inverse_dists
     return
 
 def compute_max_profit_congestion(city, searchAlgorithm):
@@ -222,13 +233,14 @@ def compute_max_profit_congestion(city, searchAlgorithm):
         return objectives.profit_and_congestion(c, "Congestion")
     searchAlgorithm = local_search.BeamSearch()
     _, maxProfit = searchAlgorithm.run_algorithm(city, profit)
-    _, maxCongestion = searchAlgorithm.run_algorithm(city, congestion)
+    _, minCongestion = searchAlgorithm.run_algorithm(city, congestion)
 
     # Maximimum profit for city over structure placements
     city.max_profit = maxProfit
 
     # Maximimum profit for city over structure placements        
-    city.max_congestion = maxCongestion
+    city.min_congestion = minCongestion
+
 
 def export_city_graph(city):
     """
