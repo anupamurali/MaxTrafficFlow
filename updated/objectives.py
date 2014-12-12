@@ -43,10 +43,14 @@ def final_objective(argcity):
     #print 'profit = ',abs(totalProfit - maxProfit[0])
     #print 'congestion = ',abs(totalCongestion + minCongestion[0])
     details = {}
-    details["diff_profit"] = abs(totalProfit - maxProfit[0])
-    details["diff_congestion"] = abs(totalProfit - maxProfit[0])
-    details["norm_profit"] = abs((totalProfit - maxProfit[0])/(maxProfit[0]+ 0.00000001))
-    details["norm_congestion"] = abs((totalCongestion + minCongestion[0])/(minCongestion[0] + 0.00000001))
+    details["raw_profit"] = totalProfit
+    details["raw_congestion"] = totalCongestion
+    details["max_profit"] = maxProfit
+    details["min_congestion"] = minCongestion
+    # details["diff_profit"] = abs(totalProfit - maxProfit[0])
+    # details["diff_congestion"] = abs(totalProfit - maxProfit[0])
+    # details["norm_profit"] = abs((totalProfit - maxProfit[0])/(maxProfit[0]+ 0.00000001))
+    # details["norm_congestion"] = abs((totalCongestion + minCongestion[0])/(minCongestion[0] + 0.00000001))
     #return totalCongestion,
     #return -(abs(totalProfit - maxProfit[0]) + abs(totalCongestion + minCongestion[0])),details
     return -(abs((totalProfit - maxProfit[0])/(maxProfit[0]+ 0.00000001)) + abs((totalCongestion + minCongestion[0])/(minCongestion[0] + 0.00000001))), details

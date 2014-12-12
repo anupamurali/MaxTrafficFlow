@@ -9,9 +9,9 @@ import objectives
 import time, sys
 
 # Load a default city
-newCity = util.another_city()
+newCity = util.harder_city_with_cycle()
 
-
+printFlows = False
 #------------------------------------------------------
 # COMMENT OUT THESE LINES IF YOU DON'T HAVE PYTHON IMAGE LIBRARY INSTALLED!
 from image_to_citydata import export_colored_image, import_from_json
@@ -83,42 +83,49 @@ print '    TIME: ', bruteForceTime
 
 for n in bestCity.nodes:
     print n.name, n.structure['name']
-for r in bestCity.roads:
-    print (r.node1.name, r.node2.name), ":", r.flow
+
+if printFlows:
+    for r in bestCity.roads:
+        print (r.node1.name, r.node2.name), ":", r.flow
 
    
-print 'HILL CLIMB: ',bestObjHill[0]
+print 'HILL CLIMB: ',bestObjHill
 print '    TIME:', hillClimbTime
 for n in bestCityHill.nodes:
     print n.name, n.structure['name']
-for r in bestCityHill.roads:
-    print (r.node1.name, r.node2.name), ":", r.flow
 
-print "BEAM SEARCH: ", bestObjBeam[0]
+if printFlows:
+    for r in bestCityHill.roads:
+        print (r.node1.name, r.node2.name), ":", r.flow
+
+print "BEAM SEARCH: ", bestObjBeam
 print '    TIME: ', beamSearchTime
 for n in bestCityBeam.nodes:
     print n.name, n.structure['name']
-for r in bestCityBeam.roads:
-    print (r.node1.name, r.node2.name), ":", r.flow
+if printFlows:
+    for r in bestCityBeam.roads:
+        print (r.node1.name, r.node2.name), ":", r.flow
 
-print 'SIMULATED ANNEALING: ',bestObjAnneal[0]
+print 'SIMULATED ANNEALING: ',bestObjAnneal
 print '    TIME:', simAnnealTime
 for n in bestCityAnneal.nodes:
     print n.name, n.structure['name']
-for r in bestCityAnneal.roads:
-    print (r.node1.name, r.node2.name), ":", r.flow
 
-print "OBJECTIVE DIFFERENCE (brute - hill): ",bestObj[0] - bestObjHill[0]
-print "TIME DIFFERENCE (brute - hill): ", bruteForceTime - hillClimbTime
+if printFlows:
+    for r in bestCityAnneal.roads:
+        print (r.node1.name, r.node2.name), ":", r.flow
 
-print "OBJECTIVE DIFFERENCE (brute - beam): ",bestObj[0] - bestObjBeam[0]
-print "TIME DIFFERENCE (brute - beam): ", bruteForceTime - beamSearchTime
+print "OBJECTIVE DIFFERENCE (brute - hill): ",(bestObj[0] - bestObjHill[0])/bestObj[0]
+print "TIME DIFFERENCE (brute - hill): ", (bruteForceTime - hillClimbTime)/bruteForceTime
+
+print "OBJECTIVE DIFFERENCE (brute - beam): ",(bestObj[0] - bestObjBeam[0])/bestObj[0]
+print "TIME DIFFERENCE (brute - beam): ", (bruteForceTime - beamSearchTime)/bruteForceTime
 
 print "OBJECTIVE DIFFERENCE (hill - beam): ",bestObjHill[0] - bestObjBeam[0]
-print "TIME DIFFERENCE (hill - beam): ", hillClimbTime - beamSearchTime
+print "TIME DIFFERENCE (hill - beam): ", (hillClimbTime - beamSearchTime)
 
-print "OBJECTIVE DIFFERENCE (brute - anneal): ",bestObj[0] - bestObjAnneal[0]
-print "TIME DIFFERENCE (brute - anneal): ", bruteForceTime - simAnnealTime
+print "OBJECTIVE DIFFERENCE (brute - anneal): ",1 - (bestObj[0] - bestObjAnneal[0])/bestObj[0]
+print "TIME DIFFERENCE (brute - anneal): ", (bruteForceTime - simAnnealTime)/bruteForceTime
 
 #---------------------------------------
 # COMMENT OUT THESE LINES IF YOU DON'T HAVE PIL INSTALLED!

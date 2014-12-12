@@ -5,7 +5,7 @@ import structure
 import city_util
 import json
 
-NUMBER_OF_CARS = 430
+NUMBER_OF_CARS = 300
 INFINITY = 999999999
 ALL_PATHS_TO_SINK = None
 
@@ -60,7 +60,7 @@ def another_city():
     nodes = [node.Node(structure.NoStructure,name=str(i)) for i in xrange(11)]
     cap = 40
     dist = 40
-    connections = [(0,1),(0,2),(1,2),(2,1),(0,3),(3,6),(2,5),(2,6),(1,4),(4,5),(4,9),(5,8),(5,1),(5,9),(6,2),(6,7),(6,8),(7,10),(8,9),(8,10),(9,10)]
+    connections = [(0,1),(0,2),(1,2),(0,3),(3,6),(2,5),(2,6),(1,4),(4,5),(4,9),(5,8),(5,1),(5,9),(6,2),(6,7),(6,8),(7,10),(8,9),(8,10),(9,10)]
     special_dists = {}
     special_dists = {(3,6): 15, (1,4): 50, (5,8): 30, (1,2): 30}
     roads = [road.Road(cap, special_dists.get((c[0], c[1]), dist), nodes[c[0]], nodes[c[1]]) for c in connections]
