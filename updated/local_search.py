@@ -94,31 +94,42 @@ class BruteForce:
 
 
 class HillClimbing(LocalSearchAlgorithm):
+    """
+    Runs Steepest Ascent Hill Climbing
+    """
     def __init__(self):
         self.name = "Hill Climbing"
         self.max_no_improvement = 10 # Max num iterations w/out improvement before the algorithm terminates
 
     def run_algorithm(self, city, objective):
+        """
+        Executes Stepeest Ascent Hill Climbing on the given city using the given objective function.
+        Returns the best city as well as the objective tuple for that city
+        """
+
         same_count = 0
+
+        # Keep track of the current best city and the current best objective
         city_util.compute_probabilities(city)
         city_util.compute_flows(city,NUMBER_OF_CARS)
-        curr_best_city, curr_best_score = (city, objective(city))
+        curr_best_city, curr_best_objective = (city, objective(city))
         while same_count <= self.max_no_improvement:
             # Get all successors
             successors = self.get_successors(curr_best_city, objective, 1)
-            best_city, best_score = successors[0]
+            best_city, best_objective = successors[0]
             # Allow Local Search to transition between different solutions with same objective
-            if best_score[0] >= curr_best_score[0]:
+            if best_objective[0] >= curr_best_objective[0]:
                 curr_best_city = best_city
-                curr_best_score = best_score
+                curr_best_objective = best_objective
             # Only allow it to do this a certain number of times
-            if best_score[0] > curr_best_score[0]:
+            if best_objective[0] > curr_best_objective[0]:
                 same_count = 0
             else:
                 same_count += 1
-            if best_score[0] < curr_best_score[0]:
+
+            if best_objective[0] < curr_best_objective[0]:
                 break
-        return curr_best_city, curr_best_score
+        return curr_best_city, curr_best_objective
 
 
 class SimulatedAnnealing(LocalSearchAlgorithm):

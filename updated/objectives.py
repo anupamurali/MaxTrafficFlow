@@ -14,9 +14,9 @@ def profit_and_congestion(argcity, optFor = "Profit"):
     for r in argcity.roads:
         totalCongestion += max(r.flow - r.capacity, 0.0)
     if optFor == "Profit":
-    	return (totalProfit), {"profit": totalProfit, "congestion": totalCongestion}
+        return (totalProfit), {"profit": totalProfit, "congestion": totalCongestion}
     elif optFor == "Congestion":
-    	return (-totalCongestion), {"profit": totalProfit, "congestion": totalCongestion}
+        return (-totalCongestion), {"profit": totalProfit, "congestion": totalCongestion}
 
 def cost(argcity):
     totalCost = 0
@@ -42,8 +42,8 @@ def final_objective(argcity):
     for r in argcity.roads:
         totalCongestion += max(r.flow - r.capacity, 0.0)
     #print totalProfit, maxProfit[0], 'cost = ', maxCost[0], totalCongestion, maxCongestion[0]
-    print 'profit = ',abs(totalProfit - maxProfit[0])
-    print 'congestion = ',abs(totalCongestion + minCongestion[0])
+    #print 'profit = ',abs(totalProfit - maxProfit[0])
+    #print 'congestion = ',abs(totalCongestion + minCongestion[0])
     details = {}
     details["diff_profit"] = abs(totalProfit - maxProfit[0])
     details["diff_congestion"] = abs(totalProfit - maxProfit[0])
