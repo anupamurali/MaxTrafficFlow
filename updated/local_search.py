@@ -96,7 +96,7 @@ class BruteForce:
 class HillClimbing(LocalSearchAlgorithm):
     def __init__(self):
         self.name = "Hill Climbing"
-        self.max_no_improvement = 30 # Max num iterations w/out improvement before the algorithm terminates
+        self.max_no_improvement = 10 # Max num iterations w/out improvement before the algorithm terminates
 
     def run_algorithm(self, city, objective):
         same_count = 0
