@@ -3,6 +3,7 @@ import structure
 import city_util
 from util import NUMBER_OF_CARS, INFINITY
 import random
+import math
 
 class LocalSearchAlgorithm:
     def run_algorithm(self, city, objective):
@@ -105,18 +106,16 @@ class HillClimbing(LocalSearchAlgorithm):
 
 class SimulatedAnnealing(LocalSearchAlgorithm):
     def __init__(self):
-        self.tmax = 200 # Max num iterations before algorithm terminates   
+        self.tmax = 20 # Max num iterations before algorithm terminates   
 
-    # calculates probability of accepting successor city as next to explore
+    # Calculates probability of accepting successor city as next to explore
     def accept_prob(self, curr_best_score, successor_score, temperature):
-        #print curr_best_score
-        #print successor_score
         s = successor_score[0]
         c = curr_best_score[0]
-        if s >= c:
+        if c <= s:
             return 1
         else:
-            return s / c * temperature
+            return math.exp((s-c)/temperature)
 
     def run_algorithm(self, city, objective):
         curr_best_city, curr_best_score = (city, objective(city))
@@ -126,7 +125,6 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
         while t < self.tmax:
             temperature = (self.tmax - t) / float(self.tmax)
             successor_city, successor_score = random.choice(self.get_successors(curr_best_city, objective))
-            #print "SA OBJECTIVE:", successor_score
             if self.accept_prob(curr_best_score, successor_score, temperature) > random.random():
                 curr_best_city = successor_city
                 curr_best_score = successor_score

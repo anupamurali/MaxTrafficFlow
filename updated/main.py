@@ -85,6 +85,9 @@ print "TIME DIFFERENCE (brute - beam): ", bruteForceTime - beamSearchTime
 print "OBJECTIVE DIFFERENCE (hill - beam): ",bestObjHill[0] - bestObjBeam[0]
 print "TIME DIFFERENCE (hill - beam): ", hillClimbTime - beamSearchTime
 
+print "OBJECTIVE DIFFERENCE (brute - anneal): ",bestObj[0] - bestObjAnneal[0]
+print "TIME DIFFERENCE (brute - anneal): ", bruteForceTime - simAnnealTime
+
 quit()
 
 

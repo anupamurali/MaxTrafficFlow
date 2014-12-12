@@ -31,23 +31,23 @@ class City:
         self.__populate_shortest_dists()
 
     def __populate_enter_exit(self):
-        for node in self.nodes:
-            self.enter_roads[node] = []
-            self.exit_roads[node] = []
-            for road in self.roads:
-                if road.node1 == node:
-                    self.exit_roads[node].append(road)
-                elif road.node2 == node:
-                    self.enter_roads[node].append(road)
+        for n in self.nodes:
+            self.enter_roads[n] = []
+            self.exit_roads[n] = []
+            for r in self.roads:
+                if r.node1 == n:
+                    self.exit_roads[n].append(r)
+                elif r.node2 == n:
+                    self.enter_roads[n].append(r)
 
-    # helper function for __populate_shortest_dists
+    # Helper function for __populate_shortest_dists
     def find_shortest_dist_node(self,Q):
         shortest_dist = float("Inf")
         shortest_dist_node = -1 # garbage ID number
-        for node in Q:
+        for n in Q:
             if self.shortest_dists[node] < shortest_dist:
                 shortest_dist = self.shortest_dists[node]
-                shortest_dist_node = node
+                shortest_dist_node = n
         return shortest_dist_node
 
     # ASSUMPTION: ACYCLIC GRAPH
@@ -55,9 +55,9 @@ class City:
         return
         self.shortest_dists[self.sink] = 0
         Q = [self.sink]
-        while len(Q) != 0:
+        while len(Q) > 0:
             print [n.name for n in Q]
-            node = self.find_shortest_dist_node(Q)
+            n = self.find_shortest_dist_node(Q)
             Q.remove(node)
             enter_roads = self.enter_roads
             for enter_road in enter_roads[node]:
@@ -69,7 +69,7 @@ class City:
                     self.shortest_dists[enter_road.node1] = enter_road.distance + self.shortest_dists[node]
                     
             
-            
+    
 
 
 
