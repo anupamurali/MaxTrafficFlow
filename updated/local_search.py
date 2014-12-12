@@ -127,9 +127,9 @@ class HillClimbing(LocalSearchAlgorithm):
             else:
                 same_count += 1
 
-            if best_objective[0] < curr_best_score[0]:
+            if best_objective[0] < curr_best_objective[0]:
                 break
-        return curr_best_city, curr_best_score
+        return curr_best_city, curr_best_objective
 
 
 class SimulatedAnnealing(LocalSearchAlgorithm):
