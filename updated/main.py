@@ -9,51 +9,64 @@ import objectives
 import time
 
 
-newCity = util.harder_city_with_cycle()
+newCity = util.harder_city()
 city_util.compute_initial_probabilities(newCity)
 util.ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newCity)
 city_util.compute_flows(newCity, 150)
+
+
 for r in newCity.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 
+"""
+TESTING FOR BRUTE FORCE
+"""
 starttime = time.time()
 bruteForce = local_search.BruteForce()
+city_util.compute_max_profit_congestion(newCity, bruteForce)
 for _ in xrange(1):
-    bestCity, bestObj = bruteForce.run_algorithm(newCity,objectives.profit_and_congestion)
+    bestCity, bestObj = bruteForce.run_algorithm(newCity,objectives.final_objective)
 bruteForceTime = time.time() - starttime
 
+"""
+TESTING FOR HILL CLIMBING
+"""
 starttime = time.time()
 hillClimb = local_search.HillClimbing()
 for _ in xrange(1):
-    bestCityHill, bestObjHill = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
+    bestCityHill, bestObjHill = hillClimb.run_algorithm(newCity,objectives.final_objective)
 hillClimbTime = time.time() - starttime
 
+"""
+TESTING FOR SIMULATED ANNEALING
+"""
 starttime = time.time()
 simulatedAnnealing = local_search.SimulatedAnnealing()
+city_util.compute_max_profit_congestion(newCity, simulatedAnnealing)
 for _ in xrange(1):
-    bestCityAnneal, bestObjAnneal = simulatedAnnealing.run_algorithm(newCity,objectives.profit_and_congestion)
+    bestCityAnneal, bestObjAnneal = simulatedAnnealing.run_algorithm(newCity,objectives.final_objective)
 simAnnealTime = time.time() - starttime
 
+"""
+TESTING FOR BEAM SEARCH
+"""
 starttime = time.time()
 beamSearch = local_search.BeamSearch()
+city_util.compute_max_profit_congestion(newCity, beamSearch)
 for _ in xrange(1):
-    bestCityBeam, bestObjBeam = beamSearch.run_algorithm(newCity,objectives.profit_and_congestion)
+    bestCityBeam, bestObjBeam = beamSearch.run_algorithm(newCity,objectives.final_objective)
 beamSearchTime = time.time() - starttime
 
 
 print 'BRUTE FORCE: ',bestObj[0]
 print '    TIME: ', bruteForceTime
 
-bruteForce = local_search.BruteForce()
-bestCity, bestObj = bruteForce.run_algorithm(newCity,objectives.profit_and_congestion)
-print 'obj  = ',bestObj
-
 for n in bestCity.nodes:
     print n.name, n.structure['name']
 for r in bestCity.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 
-    
+   
 print 'HILL CLIMB: ',bestObjHill[0]
 print '    TIME:', hillClimbTime
 for n in bestCityHill.nodes:
@@ -74,7 +87,6 @@ for n in bestCityAnneal.nodes:
     print n.name, n.structure['name']
 for r in bestCityAnneal.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
-
 
 print "OBJECTIVE DIFFERENCE (brute - hill): ",bestObj[0] - bestObjHill[0]
 print "TIME DIFFERENCE (brute - hill): ", bruteForceTime - hillClimbTime

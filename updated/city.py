@@ -1,3 +1,6 @@
+import objectives
+import local_search
+
 class City:
     def __init__(self, nodes, roads, source, sink):
         """
@@ -24,11 +27,15 @@ class City:
         # Dictionary of shortest path distances from each node to the sink
         self.shortest_dists = {}
 
+        self.max_profit = 0
+        self.max_congestion = 0
+
         # Construct entering and exiting node dictionaries
         self.__populate_enter_exit()
 
         # Populate the shortest_dists dictionary
         self.__populate_shortest_dists()
+
 
     def __populate_enter_exit(self):
         for n in self.nodes:

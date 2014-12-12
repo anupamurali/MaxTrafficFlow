@@ -30,6 +30,9 @@ class LocalSearchAlgorithm:
             return successors
 
 class BruteForce:
+    def __init__(self):
+        self.name = "Brute Force"
+
     def get_structure_combinations(self,city):
         """
         For a city of length n, each node containing k possible structures, obtain
@@ -82,6 +85,7 @@ class BruteForce:
 
 class HillClimbing(LocalSearchAlgorithm):
     def __init__(self):
+        self.name = "Hill Climbing"
         self.max_no_improvement = 30 # Max num iterations w/out improvement before the algorithm terminates
 
     def run_algorithm(self, city, objective):
@@ -106,7 +110,8 @@ class HillClimbing(LocalSearchAlgorithm):
 
 class SimulatedAnnealing(LocalSearchAlgorithm):
     def __init__(self):
-        self.tmax = 20 # Max num iterations before algorithm terminates   
+        self.name = "Simulated Annealing"
+        self.tmax = 50 # Max num iterations before algorithm terminates   
 
     # Calculates probability of accepting successor city as next to explore
     def accept_prob(self, curr_best_score, successor_score, temperature):
@@ -134,6 +139,7 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
 
 class BeamSearch(LocalSearchAlgorithm):
     def __init__(self):
+        self.name = "Beam Search"
         self.memory = 6
         self.max_no_improvement = 3
 

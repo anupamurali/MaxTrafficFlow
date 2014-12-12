@@ -1,5 +1,7 @@
 import copy
 import util
+import local_search
+import objectives
 
 def compute_flows_acyclic(city, N):
     source = city.source
@@ -211,6 +213,22 @@ def compute_probabilities(city):
             exit_road.probability = (1.0*exit_road.node2.structure['discount']/road.distance) / sum_of_inverse_dists
     return
 
+def compute_max_profit_congestion(city, searchAlgorithm):
+    if searchAlgorithm.name == "Brute Force":
+        searchAlgorithm = local_search.BeamSearch()
+    def profit(c):
+        return objectives.profit_and_congestion(c, "Profit")
+    def congestion(c):
+        return objectives.profit_and_congestion(c, "Congestion")
+    searchAlgorithm = local_search.BeamSearch()
+    _, maxProfit = searchAlgorithm.run_algorithm(city, profit)
+    _, maxCongestion = searchAlgorithm.run_algorithm(city, congestion)
+
+    # Maximimum profit for city over structure placements
+    city.max_profit = maxProfit
+
+    # Maximimum profit for city over structure placements        
+    city.max_congestion = maxCongestion
 
 def export_city_graph(city):
     """
