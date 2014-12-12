@@ -116,13 +116,15 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
+            if best_score[0] < curr_best_score[0]:
+                break
         return curr_best_city, curr_best_score
 
 
 class SimulatedAnnealing(LocalSearchAlgorithm):
     def __init__(self):
         self.name = "Simulated Annealing"
-        self.tmax = 50 # Max num iterations before algorithm terminates   
+        self.tmax = 30 # Max num iterations before algorithm terminates   
 
     # Calculates probability of accepting successor city as next to explore
     def accept_prob(self, curr_best_score, successor_score, temperature):
