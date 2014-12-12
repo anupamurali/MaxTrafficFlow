@@ -78,7 +78,6 @@ def compute_flows_cyclic(city, N):
     while prevNodes:
         # Set of nodes we have to visit next
         succ = set()
-
         # Process each node we have left to explore
         for node_object in prevNodes:
             node = node_object.name

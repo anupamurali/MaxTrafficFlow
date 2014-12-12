@@ -4,7 +4,7 @@ NODE_COLOR = (0,0,255)
 ROAD_COLOR = (255,0,0)
 ALL_DIRECTIONS =  [(-1, 0), (-1, -1), (-1, 1), (0, -1), (0, 1), (1,-1), (1,0), (1,1)]
 
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 import sys
 import json
 
@@ -155,12 +155,22 @@ def export_to_json(all_nodes, filename):
     with open(filename, "w") as f:
         f.write(json_data)
 
+def export_labeled_image(all_nodes, inimgfile, outimgfile):
+    img = Image.open(inimgfile)
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype("arial.ttf", 32)
+    for id, data in all_nodes.iteritems():
+        pos = data["pos"]
+        draw.text(pos,id,(0,0,0),font=font)
+    img.save(outimgfile)
+
+
 def import_from_json(filename):
     with open(filename, "r") as f:
         all_nodes = json.load(f)
     return all_nodes
 
-def convert_image_to_citydata(image_file, outfile):
+def convert_image_to_citydata(image_file, outfile, outimgfile):
     next_id_generator = get_next_id()
 
     pixels = load_image(image_file)
@@ -211,8 +221,12 @@ def convert_image_to_citydata(image_file, outfile):
             print "        ",dest, "(",dist,")"
 
     export_to_json(all_nodes, outfile)
+    export_labeled_image(all_nodes, image_file, outimgfile)
+    return all_nodes
 
 if __name__ == "__main__":
     image_file = sys.argv[1]
-    outfile = sys.argv[2]
-    convert_image_to_citydata(image_file, outfile)
+    name, ext = image_file.split('.')
+    outfile = name + "_city.json"
+    outimgfile = name + "_labeled." + ext
+    convert_image_to_citydata(image_file, outfile, outimgfile)

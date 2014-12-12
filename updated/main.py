@@ -9,7 +9,7 @@ import objectives
 import time
 
 
-newCity = util.load_city_from_data("test.city")
+newCity = util.another_city()
 city_util.compute_initial_probabilities(newCity)
 util.ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newCity)
 city_util.compute_flows(newCity, 150)
@@ -27,6 +27,13 @@ city_util.compute_max_profit_congestion(newCity, bruteForce)
 for _ in xrange(1):
     bestCity, bestObj = bruteForce.run_algorithm(newCity,objectives.final_objective)
 bruteForceTime = time.time() - starttime
+for r in newCity.roads:
+    print r.node1.name, r.node2.name, r.probability
+print " "
+for r in bestCity.roads:
+    print r.node1.name, r.node2.name, r.probability
+print "THERE ARE ",len(newCity.roads), "ROADS"
+print "THERE ARE ", len(bestCity.roads), "ROADS"
 
 """
 TESTING FOR HILL CLIMBING
