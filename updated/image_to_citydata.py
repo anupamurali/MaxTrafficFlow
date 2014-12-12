@@ -159,7 +159,7 @@ def export_to_json(all_nodes, filename):
 def export_labeled_image(all_nodes, inimgfile, outimgfile):
     img = Image.open(inimgfile)
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("arial.ttf", 32)
+    font = ImageFont.load_default()
     for id, data in all_nodes.iteritems():
         pos = data["pos"]
         draw.text(pos,id,(0,0,0),font=font)
@@ -174,6 +174,7 @@ def export_colored_image(all_nodes, colorings, inimgfile, outimgfile):
             if random.random()<0.60:
                 pixdata[x,y] = color
     im.save(outimgfile)
+    im.show()
 
 
 def import_from_json(filename):
