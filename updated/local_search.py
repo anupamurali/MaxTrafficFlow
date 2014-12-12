@@ -99,7 +99,7 @@ class HillClimbing(LocalSearchAlgorithm):
     """
     def __init__(self):
         self.name = "Hill Climbing"
-        self.max_no_improvement = 30 # Max num iterations w/out improvement before the algorithm terminates
+        self.max_no_improvement = 10 # Max num iterations w/out improvement before the algorithm terminates
 
     def run_algorithm(self, city, objective):
         """
@@ -108,11 +108,15 @@ class HillClimbing(LocalSearchAlgorithm):
         """
 
         same_count = 0
+<<<<<<< HEAD
         
         # Keep track of the current best city and the current best objective
         curr_best_city, curr_best_objective = (city, objective(city))
+=======
+>>>>>>> ca7cbb09b661614c275138a5ff66bd7eee5a8bd1
         city_util.compute_probabilities(city)
         city_util.compute_flows(city,NUMBER_OF_CARS)
+        curr_best_city, curr_best_score = (city, objective(city))
         while same_count <= self.max_no_improvement:
             # Get all successors
             successors = self.get_successors(curr_best_city, objective, 1)
@@ -126,13 +130,19 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
+<<<<<<< HEAD
         return curr_best_city, curr_best_objective
+=======
+            if best_score[0] < curr_best_score[0]:
+                break
+        return curr_best_city, curr_best_score
+>>>>>>> ca7cbb09b661614c275138a5ff66bd7eee5a8bd1
 
 
 class SimulatedAnnealing(LocalSearchAlgorithm):
     def __init__(self):
         self.name = "Simulated Annealing"
-        self.tmax = 50 # Max num iterations before algorithm terminates   
+        self.tmax = 30 # Max num iterations before algorithm terminates   
 
     # Calculates probability of accepting successor city as next to explore
     def accept_prob(self, curr_best_score, successor_score, temperature):
@@ -144,9 +154,9 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
             return math.exp((s-c)/temperature)
 
     def run_algorithm(self, city, objective):
-        curr_best_city, curr_best_score = (city, objective(city))
         city_util.compute_probabilities(city)
         city_util.compute_flows(city, NUMBER_OF_CARS)
+        curr_best_city, curr_best_score = (city, objective(city))
         t = 0
         while t < self.tmax:
             temperature = (self.tmax - t) / float(self.tmax)
