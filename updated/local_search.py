@@ -116,6 +116,8 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
+            if best_score[0] < curr_best_score:
+                break
         return curr_best_city, curr_best_score
 
 
