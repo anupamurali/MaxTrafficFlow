@@ -108,12 +108,8 @@ class HillClimbing(LocalSearchAlgorithm):
         """
 
         same_count = 0
-<<<<<<< HEAD
-        
+
         # Keep track of the current best city and the current best objective
-        curr_best_city, curr_best_objective = (city, objective(city))
-=======
->>>>>>> ca7cbb09b661614c275138a5ff66bd7eee5a8bd1
         city_util.compute_probabilities(city)
         city_util.compute_flows(city,NUMBER_OF_CARS)
         curr_best_city, curr_best_score = (city, objective(city))
@@ -130,13 +126,10 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count = 0
             else:
                 same_count += 1
-<<<<<<< HEAD
-        return curr_best_city, curr_best_objective
-=======
-            if best_score[0] < curr_best_score[0]:
+
+            if best_objective[0] < curr_best_score[0]:
                 break
         return curr_best_city, curr_best_score
->>>>>>> ca7cbb09b661614c275138a5ff66bd7eee5a8bd1
 
 
 class SimulatedAnnealing(LocalSearchAlgorithm):
