@@ -108,17 +108,23 @@ for n in bestCityAnneal.nodes:
 for r in bestCityAnneal.roads:
     print (r.node1.name, r.node2.name), ":", r.flow
 
-print "OBJECTIVE DIFFERENCE (brute - hill): ",bestObj[0] - bestObjHill[0]
+print "OBJECTIVE DIFFERENCE (brute - hill): ", bestObj[0] - bestObjHill[0]
 print "TIME DIFFERENCE (brute - hill): ", bruteForceTime - hillClimbTime
 
-print "OBJECTIVE DIFFERENCE (brute - beam): ",bestObj[0] - bestObjBeam[0]
+print "OBJECTIVE DIFFERENCE (brute - beam): ", bestObj[0] - bestObjBeam[0]
 print "TIME DIFFERENCE (brute - beam): ", bruteForceTime - beamSearchTime
 
-print "OBJECTIVE DIFFERENCE (hill - beam): ",bestObjHill[0] - bestObjBeam[0]
+print "OBJECTIVE DIFFERENCE (brute - anneal): ", bestObj[0] - bestObjAnneal[0]
+print "TIME DIFFERENCE (brute - anneal): ", bruteForceTime - simAnnealTime
+
+print "OBJECTIVE DIFFERENCE (hill - beam): ", bestObjHill[0] - bestObjBeam[0]
 print "TIME DIFFERENCE (hill - beam): ", hillClimbTime - beamSearchTime
 
-print "OBJECTIVE DIFFERENCE (brute - anneal): ",bestObj[0] - bestObjAnneal[0]
-print "TIME DIFFERENCE (brute - anneal): ", bruteForceTime - simAnnealTime
+print "OBJECTIVE DIFFERENCE (brute - anneal): ", bestObjHill[0] - bestObjAnneal[0]
+print "TIME DIFFERENCE (brute - anneal): ", hillClimbTime - simAnnealTime
+
+print "OBJECTIVE DIFFERENCE (brute - anneal): ", bestObjBeam[0] - bestObjAnneal[0]
+print "TIME DIFFERENCE (brute - anneal): ", beamSearchTime - simAnnealTime
 
 #---------------------------------------
 # COMMENT OUT THESE LINES IF YOU DON'T HAVE PIL INSTALLED!
