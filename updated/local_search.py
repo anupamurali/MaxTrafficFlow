@@ -29,6 +29,16 @@ class LocalSearchAlgorithm:
         else:
             return successors
 
+    def get_random_successor(self, city, objective):
+        rand_node = random.choice(xrange(len(city.nodes)))
+        rand_structure = random.choice([s for s in structure.ALL_STRUCTURES if s != city.nodes[rand_node].structure])
+        new_city = copy.deepcopy(city)
+        new_city.nodes[rand_node].structure = rand_structure
+        city_util.compute_probabilities(new_city)
+        city_util.compute_flows(new_city, NUMBER_OF_CARS)
+        return (new_city, objective(new_city))
+
+
 class BruteForce:
     def get_structure_combinations(self,city):
         """
@@ -104,6 +114,7 @@ class HillClimbing(LocalSearchAlgorithm):
                 same_count += 1
         return curr_best_city, curr_best_score
 
+
 class SimulatedAnnealing(LocalSearchAlgorithm):
     def __init__(self):
         self.tmax = 20 # Max num iterations before algorithm terminates   
@@ -124,7 +135,8 @@ class SimulatedAnnealing(LocalSearchAlgorithm):
         t = 0
         while t < self.tmax:
             temperature = (self.tmax - t) / float(self.tmax)
-            successor_city, successor_score = random.choice(self.get_successors(curr_best_city, objective))
+            #successor_city, successor_score = random.choice(self.get_successors(curr_best_city, objective))
+            successor_city, successor_score = self.get_random_successor(curr_best_city, objective)
             if self.accept_prob(curr_best_score, successor_score, temperature) > random.random():
                 curr_best_city = successor_city
                 curr_best_score = successor_score
@@ -136,7 +148,6 @@ class BeamSearch(LocalSearchAlgorithm):
     def __init__(self):
         self.memory = 6
         self.max_no_improvement = 3
-
 
     def run_algorithm(self, city, objective):
         # Get 'memory' best successors
