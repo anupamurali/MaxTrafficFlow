@@ -2,6 +2,8 @@ import structure
 import city
 import math
 
+EPSILON = 0.00000001
+
 def profit_and_congestion(argcity, optFor = "Profit"):
     # Returns the objective value of a given city with flows. ALso returns a dictionary of the
     # individual components of it (ex {"profit": 200, "congestion": 1000}
@@ -45,10 +47,8 @@ def final_objective(argcity):
     details = {}
     details["diff_profit"] = abs(totalProfit - maxProfit[0])
     details["diff_congestion"] = abs(totalProfit - maxProfit[0])
-    details["norm_profit"] = abs((totalProfit - maxProfit[0])/(maxProfit[0]+ 0.00000001))
-    details["norm_congestion"] = abs((totalCongestion + minCongestion[0])/(minCongestion[0] + 0.00000001))
-    #return totalCongestion,
-    #return -(abs(totalProfit - maxProfit[0]) + abs(totalCongestion + minCongestion[0])),details
-    return -(abs((totalProfit - maxProfit[0])/(maxProfit[0]+ 0.00000001)) + abs((totalCongestion + minCongestion[0])/(minCongestion[0] + 0.00000001))), details
+    details["norm_profit"] = abs((totalProfit - maxProfit[0])/(maxProfit[0]+ EPSILON))
+    details["norm_congestion"] = abs((totalCongestion + minCongestion[0])/(minCongestion[0] + EPSILON))
+    return -(abs((totalProfit - maxProfit[0])/(maxProfit[0]+ EPSILON)) + abs((totalCongestion + minCongestion[0])/(minCongestion[0] + EPSILON))), details
 
 

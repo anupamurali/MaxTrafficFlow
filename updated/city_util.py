@@ -78,7 +78,6 @@ def compute_flows_cyclic(city, N):
     # or we see the same flows again (no more updates)
     flowHasChanged = True
     while prevNodes and flowHasChanged:
-        print [n.name for n in prevNodes]
         flowHasChanged = False
 
         # Set of nodes we have to visit next
@@ -148,8 +147,6 @@ def compute_flows_cyclic(city, N):
             nodeOutFlows[node] = []
             # Iterate over all incoming flows
             for inflow_node, inflow_flow, inflow_path in nodeInFlows:
-                if node == "2":
-                    print node, inflow_path, [r.node2.name for r in valid_exit_roads[inflow_path]]
                 # Iterate over all valid exits for this particular incoming flow
                 for exit_road in valid_exit_roads[inflow_path]:
                     exit_node_object = exit_road.node2
