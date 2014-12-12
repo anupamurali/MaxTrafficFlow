@@ -88,58 +88,9 @@ print "TIME DIFFERENCE (hill - beam): ", hillClimbTime - beamSearchTime
 print "OBJECTIVE DIFFERENCE (brute - anneal): ",bestObj[0] - bestObjAnneal[0]
 print "TIME DIFFERENCE (brute - anneal): ", bruteForceTime - simAnnealTime
 
-quit()
 
-
-
-newCity = util.basic_city()
-allPaths = city_util.get_all_paths_to_sink(newCity)
-
-for n in newCity.nodes:
-    print n.name
-    for path in allPaths[n]:
-        print "   ", [nd.name for nd in path]
-
-quit()
-city_util.compute_initial_probabilities(newCity)
 
 
 
 
     
-
-quit()
-
-
-
-##newCity = util.basic_city()
-##allPaths = city_util.get_all_paths_to_sink(newCity)
-##
-##for n in newCity.nodes:
-##    print n.name
-##    for path in allPaths[n]:
-##        print "   ", [nd.name for nd in path]
-##
-##quit()
-##city_util.compute_initial_probabilities(newCity)
-##
-##hillClimb = local_search.HillClimbing()
-##bestCity, _ = hillClimb.run_algorithm(newCity,objectives.profit_and_congestion)
-##for n in bestCity.nodes:
-##    print n.name, n.structure['name']
-##
-##print "PROBS:"
-##for r in bestCity.roads:
-##    print (r.node1.name, r.node2.name), ":", r.probability
-##print "FLOWS"
-##for r in bestCity.roads:
-##    print (r.node1.name, r.node2.name), ":", r.flow
-##quit()
-##
-##newCity = util.harder_city()
-##city_util.compute_initial_probabilities(newCity)
-##print "PROBS:", [r.probability for r in newCity.roads]
-##
-##city_util.compute_flows(newCity, 150)
-##for r in newCity.roads:
-##    print (r.node1.name, r.node2.name), ":", r.flow
