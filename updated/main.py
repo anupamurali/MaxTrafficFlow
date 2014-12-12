@@ -10,6 +10,7 @@ import time
 
 
 newCity = util.load_city_from_data('test_city.json')
+
 city_util.compute_initial_probabilities(newCity)
 util.ALL_PATHS_TO_SINK = city_util.get_all_paths_to_sink(newCity)
 city_util.compute_flows(newCity, 150)
@@ -65,7 +66,7 @@ for _ in xrange(1):
 beamSearchTime = time.time() - starttime
 
 
-print 'BRUTE FORCE: ',bestObj[0]
+print 'BRUTE FORCE: ',bestObj
 print '    TIME: ', bruteForceTime
 
 for n in bestCity.nodes:

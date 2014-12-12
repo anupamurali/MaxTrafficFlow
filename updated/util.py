@@ -5,7 +5,7 @@ import structure
 import city_util
 import json
 
-NUMBER_OF_CARS = 150
+NUMBER_OF_CARS = 1500
 INFINITY = 999999999
 ALL_PATHS_TO_SINK = None
 

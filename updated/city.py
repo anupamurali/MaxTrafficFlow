@@ -28,7 +28,7 @@ class City:
         self.shortest_dists = {}
 
         self.max_profit = 0
-        self.max_congestion = 0
+        self.min_congestion = 0
 
         # Construct entering and exiting node dictionaries
         self.__populate_enter_exit()
